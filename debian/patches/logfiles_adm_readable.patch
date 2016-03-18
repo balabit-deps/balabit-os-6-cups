@@ -1,0 +1,53 @@
+Description: Make log files readable to group "adm", if present.
+Author: Martin Pitt <mpitt@debian.org>
+Bug-Ubuntu: https://launchpad.net/bugs/345953
+
+Last-Update: 2015-02-10
+--- a/scheduler/log.c
++++ b/scheduler/log.c
+@@ -26,6 +26,7 @@
+ #  include <systemd/sd-journal.h>
+ #endif /* HAVE_ASL_H */
+ #include <syslog.h>
++#include <grp.h>
+ 
+ 
+ /*
+@@ -115,6 +116,7 @@
+ 		filename[1024],		/* Formatted log filename */
+ 		*ptr;			/* Pointer into filename */
+   const char	*logptr;		/* Pointer into log filename */
++  struct group  *loggrp;		/* Group entry of log filename */
+ 
+ 
+  /*
+@@ -135,6 +137,11 @@
+   }
+ 
+  /*
++  * Use adm group if possible, fall back to Group
++  */
++ loggrp = getgrnam("adm");
++
++ /*
+   * Format the filename as needed...
+   */
+ 
+@@ -255,7 +262,7 @@
+       * Change ownership and permissions of non-device logs...
+       */
+ 
+-      fchown(cupsFileNumber(*lf), RunUser, Group);
++      fchown(cupsFileNumber(*lf), RunUser, loggrp ? loggrp->gr_gid : Group);
+       fchmod(cupsFileNumber(*lf), LogFilePerm);
+     }
+   }
+@@ -306,7 +313,7 @@
+     * Change ownership and permissions of non-device logs...
+     */
+ 
+-    fchown(cupsFileNumber(*lf), RunUser, Group);
++    fchown(cupsFileNumber(*lf), RunUser, loggrp ? loggrp->gr_gid : Group);
+     fchmod(cupsFileNumber(*lf), LogFilePerm);
+   }
+ 
