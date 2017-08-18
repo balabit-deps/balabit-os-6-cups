@@ -9,7 +9,6 @@ rootbackends-worldreadable.patch
 fixes-for-jobs-with-multiple-files-and-multiple-formats.patch
 
 # patches which should go upstream
-auto-shutdown-on-idle-also-with-webinterface-on.patch
 cupsd-upstart-support.patch
 # Fix tests, should probably go upstream
 tests-ignore-warnings.patch
@@ -56,3 +55,4 @@ debianize_cups-config.patch
 # po4a might not be appropriate. It also needs to be high on the patch
 # queue to catch all Debian-specific changes
 manpage-translations.patch
+systemd-path-partof.patch
